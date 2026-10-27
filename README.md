@@ -1,4 +1,4 @@
-# Geometric Transformations Using OpenCV
+<img width="1191" height="796" alt="image" src="https://github.com/user-attachments/assets/216fdd41-21ec-40b1-85fe-ac45dec4ed36" /># Geometric Transformations Using OpenCV
 
 ---
 
@@ -77,10 +77,126 @@ Read the input image in color mode.
 ### Register No: 212225230042
 
 ##  Program
+```
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
----
+# Step 1: Read the image in grayscale
+img = cv2.imread('pic.png', 0)
+
+if img is None:
+    print("Image not found!")
+    exit()
+
+# Step 2: Display original grayscale image and histogram
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 2, 1)
+plt.imshow(img, cmap='gray')
+plt.title('Original Grayscale Image')
+plt.axis('off')
+
+plt.subplot(2, 2, 2)
+plt.hist(img.ravel(), 256, [0, 256])
+plt.title('Original Grayscale Histogram')
+
+# Step 3: Apply histogram equalization
+equalized = cv2.equalizeHist(img)
+
+plt.subplot(2, 2, 3)
+plt.imshow(equalized, cmap='gray')
+plt.title('Enhanced Grayscale Image')
+plt.axis('off')
+
+plt.subplot(2, 2, 4)
+plt.hist(equalized.ravel(), 256, [0, 256])
+plt.title('Enhanced Grayscale Histogram')
+
+plt.tight_layout()
+plt.show()
+
+# Step 4: Read the image in color format
+color_img = cv2.imread('pic.png')
+
+if color_img is None:
+    print("Color image not found!")
+    exit()
+
+# Step 5: Split the image into B, G, R channels
+b, g, r = cv2.split(color_img)
+
+# Step 6: Plot B, G, R channel histograms
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 2, 1)
+plt.imshow(cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB))
+plt.title('Original Color Image')
+plt.axis('off')
+
+plt.subplot(2, 2, 2)
+plt.hist(b.ravel(), 256, [0, 256], color='blue')
+plt.title('Blue Channel Histogram')
+
+plt.subplot(2, 2, 3)
+plt.hist(g.ravel(), 256, [0, 256], color='green')
+plt.title('Green Channel Histogram')
+
+plt.subplot(2, 2, 4)
+plt.hist(r.ravel(), 256, [0, 256], color='red')
+plt.title('Red Channel Histogram')
+
+plt.tight_layout()
+plt.show()
+
+# Step 7: Convert BGR to HSV
+hsv = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
+
+# Step 8: Split HSV channels
+h, s, v = cv2.split(hsv)
+
+# Step 9: Apply histogram equalization to V channel
+v_equalized = cv2.equalizeHist(v)
+
+# Step 10: Merge channels and convert HSV back to BGR
+hsv_equalized = cv2.merge((h, s, v_equalized))
+enhanced_color = cv2.cvtColor(hsv_equalized, cv2.COLOR_HSV2BGR)
+
+# Step 11: Display original color image, histogram,
+# enhanced image, and enhanced histogram
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 2, 1)
+plt.imshow(cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB))
+plt.title('Original Color Image')
+plt.axis('off')
+
+plt.subplot(2, 2, 2)
+plt.hist(color_img.ravel(), 256, [0, 256])
+plt.title('Original Color Histogram')
+
+plt.subplot(2, 2, 3)
+plt.imshow(cv2.cvtColor(enhanced_color, cv2.COLOR_BGR2RGB))
+plt.title('Enhanced Color Image')
+plt.axis('off')
+
+plt.subplot(2, 2, 4)
+plt.hist(enhanced_color.ravel(), 256, [0, 256])
+plt.title('Enhanced Color Histogram')
+
+plt.tight_layout()
+plt.show()
+
+```
 
 ##  Output
+<img width="1362" height="511" alt="Screenshot 2026-10-27 215810" src="https://github.com/user-attachments/assets/d5891826-22b3-44a6-96bf-147b64e5f3b7" />
+<img width="1382" height="517" alt="Screenshot 2026-10-27 215826" src="https://github.com/user-attachments/assets/91d78aac-c617-4b9b-a675-fbf03670dc20" />
+<img width="1402" height="468" alt="Screenshot 2026-10-27 215842" src="https://github.com/user-attachments/assets/d7678307-d9c3-4f7d-be67-b3fea6b72dcb" />
+<img width="1408" height="527" alt="Screenshot 2026-10-27 215857" src="https://github.com/user-attachments/assets/da15da1f-71bc-4eca-9d4b-38ed92576490" />
+<img width="1191" height="796" alt="Screenshot 2026-10-27 215946" src="https://github.com/user-attachments/assets/c93c87b4-796f-408f-aab5-fa7dd11f9fb7" />
+
+
 
 ### Image Translation
 - Original image is displayed  
