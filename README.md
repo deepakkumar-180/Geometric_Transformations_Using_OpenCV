@@ -1,6 +1,3 @@
-<img width="1191" height="796" alt="image" src="https://github.com/user-attachments/assets/216fdd41-21ec-40b1-85fe-ac45dec4ed36" /># Geometric Transformations Using OpenCV
-
----
 
 ## Aim
 
@@ -72,7 +69,7 @@ Read the input image in color mode.
 
 
 ### Developed By:
-**Name:** DEEPAKKUMAR S 
+# NAME: DEEPAKKUMAR S 
 
 ### Register No: 212225230042
 
