@@ -75,123 +75,71 @@ Read the input image in color mode.
 
 ##  Program
 ```
+
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Step 1: Read the image in grayscale
-img = cv2.imread('pic.png', 0)
+# Read image
+img = cv2.imread("pic.png")
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+h, w = img.shape[:2]
 
-if img is None:
-    print("Image not found!")
-    exit()
+# 1. Translation
+M = np.float32([[1, 0, 50], [0, 1, 80]])
+translation = cv2.warpAffine(img, M, (w, h))
 
-# Step 2: Display original grayscale image and histogram
-plt.figure(figsize=(10, 8))
+# 2. Scaling
+small = cv2.resize(img, None, fx=0.5, fy=0.5)
+large = cv2.resize(img, None, fx=2, fy=2)
 
-plt.subplot(2, 2, 1)
-plt.imshow(img, cmap='gray')
-plt.title('Original Grayscale Image')
-plt.axis('off')
+# 3. Shearing
+M1 = np.float32([[1, 0.5, 0], [0, 1, 0]])
+horizontal = cv2.warpAffine(img, M1, (w, h))
 
-plt.subplot(2, 2, 2)
-plt.hist(img.ravel(), 256, [0, 256])
-plt.title('Original Grayscale Histogram')
+M2 = np.float32([[1, 0, 0], [0.5, 1, 0]])
+vertical = cv2.warpAffine(img, M2, (w, h))
 
-# Step 3: Apply histogram equalization
-equalized = cv2.equalizeHist(img)
+# 4. Reflection
+flip_h = cv2.flip(img, 1)
+flip_v = cv2.flip(img, 0)
+flip_both = cv2.flip(img, -1)
 
-plt.subplot(2, 2, 3)
-plt.imshow(equalized, cmap='gray')
-plt.title('Enhanced Grayscale Image')
-plt.axis('off')
+# 5. Rotation
+center = (w // 2, h // 2)
+R1 = cv2.getRotationMatrix2D(center, 45, 1)
+rotate45 = cv2.warpAffine(img, R1, (w, h))
 
-plt.subplot(2, 2, 4)
-plt.hist(equalized.ravel(), 256, [0, 256])
-plt.title('Enhanced Grayscale Histogram')
+R2 = cv2.getRotationMatrix2D(center, 90, 1)
+rotate90 = cv2.warpAffine(img, R2, (w, h))
 
-plt.tight_layout()
-plt.show()
+# Display results
+images = [img, translation, small, large, horizontal,
+          vertical, flip_h, flip_v, flip_both, rotate45, rotate90]
 
-# Step 4: Read the image in color format
-color_img = cv2.imread('pic.png')
+titles = ["Original", "Translation", "Scale 0.5x", "Scale 2x",
+          "Horizontal Shear", "Vertical Shear", "Horizontal Flip",
+          "Vertical Flip", "Both Flips", "Rotate 45", "Rotate 90"]
 
-if color_img is None:
-    print("Color image not found!")
-    exit()
+plt.figure(figsize=(14, 12))
 
-# Step 5: Split the image into B, G, R channels
-b, g, r = cv2.split(color_img)
-
-# Step 6: Plot B, G, R channel histograms
-plt.figure(figsize=(10, 8))
-
-plt.subplot(2, 2, 1)
-plt.imshow(cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB))
-plt.title('Original Color Image')
-plt.axis('off')
-
-plt.subplot(2, 2, 2)
-plt.hist(b.ravel(), 256, [0, 256], color='blue')
-plt.title('Blue Channel Histogram')
-
-plt.subplot(2, 2, 3)
-plt.hist(g.ravel(), 256, [0, 256], color='green')
-plt.title('Green Channel Histogram')
-
-plt.subplot(2, 2, 4)
-plt.hist(r.ravel(), 256, [0, 256], color='red')
-plt.title('Red Channel Histogram')
+for i in range(len(images)):
+    plt.subplot(4, 3, i + 1)
+    plt.imshow(images[i])
+    plt.title(titles[i])
+    plt.axis("off")
 
 plt.tight_layout()
 plt.show()
 
-# Step 7: Convert BGR to HSV
-hsv = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
 
-# Step 8: Split HSV channels
-h, s, v = cv2.split(hsv)
-
-# Step 9: Apply histogram equalization to V channel
-v_equalized = cv2.equalizeHist(v)
-
-# Step 10: Merge channels and convert HSV back to BGR
-hsv_equalized = cv2.merge((h, s, v_equalized))
-enhanced_color = cv2.cvtColor(hsv_equalized, cv2.COLOR_HSV2BGR)
-
-# Step 11: Display original color image, histogram,
-# enhanced image, and enhanced histogram
-plt.figure(figsize=(10, 8))
-
-plt.subplot(2, 2, 1)
-plt.imshow(cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB))
-plt.title('Original Color Image')
-plt.axis('off')
-
-plt.subplot(2, 2, 2)
-plt.hist(color_img.ravel(), 256, [0, 256])
-plt.title('Original Color Histogram')
-
-plt.subplot(2, 2, 3)
-plt.imshow(cv2.cvtColor(enhanced_color, cv2.COLOR_BGR2RGB))
-plt.title('Enhanced Color Image')
-plt.axis('off')
-
-plt.subplot(2, 2, 4)
-plt.hist(enhanced_color.ravel(), 256, [0, 256])
-plt.title('Enhanced Color Histogram')
-
-plt.tight_layout()
-plt.show()
 
 ```
 
 ##  Output
-<img width="1362" height="511" alt="Screenshot 2026-10-27 215810" src="https://github.com/user-attachments/assets/d5891826-22b3-44a6-96bf-147b64e5f3b7" />
-<img width="1382" height="517" alt="Screenshot 2026-10-27 215826" src="https://github.com/user-attachments/assets/91d78aac-c617-4b9b-a675-fbf03670dc20" />
-<img width="1402" height="468" alt="Screenshot 2026-10-27 215842" src="https://github.com/user-attachments/assets/d7678307-d9c3-4f7d-be67-b3fea6b72dcb" />
-<img width="1408" height="527" alt="Screenshot 2026-10-27 215857" src="https://github.com/user-attachments/assets/da15da1f-71bc-4eca-9d4b-38ed92576490" />
-<img width="1191" height="796" alt="Screenshot 2026-10-27 215946" src="https://github.com/user-attachments/assets/c93c87b4-796f-408f-aab5-fa7dd11f9fb7" />
+<img width="693" height="602" alt="image" src="https://github.com/user-attachments/assets/d219a790-4b4a-44e4-a632-b69c31b0f9c9" />
+
 
 
 
